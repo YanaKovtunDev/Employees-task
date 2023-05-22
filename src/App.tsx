@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router";
+import { Home } from "./pages/Home";
+import { Timesheets } from "./pages/Timesheets";
+import "./App.css";
+import { UserContext } from "./context/user";
+import React, { useState } from "react";
+import { IUser } from "./types";
 
-function App() {
+const UserContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): JSX.Element => {
+  const [user, setUser] = useState<IUser | null>(null);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export function App() {
+  return (
+    <UserContextProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/timesheets/:userId" element={<Timesheets />} />
+      </Routes>
+    </UserContextProvider>
   );
 }
-
-export default App;
